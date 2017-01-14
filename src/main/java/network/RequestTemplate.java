@@ -1,4 +1,4 @@
-package main.java.network;
+package network;
 
 import java.io.*;
 import java.net.HttpURLConnection;

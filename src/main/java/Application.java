@@ -1,8 +1,12 @@
-package main.java;
-
-import main.java.network.RequestTemplate;
+import exceptions.QueueOverflow;
+import work.CelsiusToFahrenheit;
+import work.TemperatureWork;
+import workers.TemperatureConverter;
+import workers.Worker;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.logging.Logger;
 
 /**
@@ -10,22 +14,22 @@ import java.util.logging.Logger;
  */
 public class Application {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, QueueOverflow, ExecutionException, InterruptedException {
         Logger log = Logger.getLogger("Application");
         log.info("Async Worker application started");
 
-        RequestTemplate template = new RequestTemplate(
-                "http://www.w3schools.com/xml/tempconvert.asmx/CelsiusToFahrenheit",
-                "POST"
-        );
-        template.addRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        template.addRequestHeader("Content-Length", "256");
-        template.addRequestParam("Celsius", "40");
+        Worker<CelsiusToFahrenheit> worker = new TemperatureConverter<>(10, 3);
+        worker.startWorker();
 
-        String response = template.performRequest();
+        CelsiusToFahrenheit celsiusConversion = new CelsiusToFahrenheit();
+        celsiusConversion.setValue(40);
+        Future<CelsiusToFahrenheit> promise = worker.enqueueWork(celsiusConversion);
+        while (!promise.isDone()) {
+            log.info("Awaiting promise");
+        }
+        log.info("40 celsius is " + promise.get().getValue() + " fahrenheit");
 
-        log.info(response);
-
+        worker.stopWorker();
         log.info("Async Worker application ended");
     }
 }
