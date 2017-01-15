@@ -1,6 +1,6 @@
 import exceptions.UnqueuedWorkException;
 import work.CelsiusToFahrenheit;
-import workers.TemperatureConverter;
+import workers.implementations.TemperatureConverter;
 import workers.Worker;
 
 import java.io.IOException;

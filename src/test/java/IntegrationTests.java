@@ -1,4 +1,3 @@
-import com.sun.javafx.binding.SelectBinding;
 import exceptions.UnqueuedWorkException;
 import network.RequestTemplate;
 import org.junit.Assert;
@@ -7,7 +6,7 @@ import org.junit.internal.runners.JUnit4ClassRunner;
 import org.junit.runner.RunWith;
 import work.CelsiusToFahrenheit;
 import work.FahrenheitToCelsius;
-import workers.TemperatureConverter;
+import workers.implementations.TemperatureConverter;
 import workers.Worker;
 import workers.WorkerState;
 

@@ -1,9 +1,10 @@
-package workers;
+package workers.implementations;
 
 import exceptions.UnqueuedWorkException;
 import network.RequestTemplate;
 import utils.Constants;
 import work.TemperatureWork;
+import workers.WorkerState;
 
 import java.io.IOException;
 import java.util.concurrent.*;
