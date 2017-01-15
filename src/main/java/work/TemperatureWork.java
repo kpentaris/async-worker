@@ -9,4 +9,6 @@ public interface TemperatureWork<T> {
 
     T getValue();
 
+    String getConversionType();
+
 }

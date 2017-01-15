@@ -1,6 +1,6 @@
 package workers;
 
-import exceptions.QueueOverflow;
+import exceptions.UnqueuedWorkException;
 
 import java.util.concurrent.Future;
 
@@ -13,6 +13,6 @@ public interface Worker<W> {
 
     void stopWorker();
 
-    Future<W> enqueueWork(W work) throws QueueOverflow;
+    Future<W> enqueueWork(W work) throws UnqueuedWorkException;
 
 }

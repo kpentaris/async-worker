@@ -1,6 +1,5 @@
-import exceptions.QueueOverflow;
+import exceptions.UnqueuedWorkException;
 import work.CelsiusToFahrenheit;
-import work.TemperatureWork;
 import workers.TemperatureConverter;
 import workers.Worker;
 
@@ -14,7 +13,7 @@ import java.util.logging.Logger;
  */
 public class Application {
 
-    public static void main(String[] args) throws IOException, QueueOverflow, ExecutionException, InterruptedException {
+    public static void main(String[] args) throws IOException, UnqueuedWorkException, ExecutionException, InterruptedException {
         Logger log = Logger.getLogger("Application");
         log.info("Async Worker application started");
 

@@ -1,10 +1,8 @@
 package workers;
 
-import exceptions.QueueOverflow;
+import exceptions.UnqueuedWorkException;
 import network.RequestTemplate;
 import utils.Constants;
-import work.CelsiusToFahrenheit;
-import work.FahrenheitToCelsius;
 import work.TemperatureWork;
 
 import java.io.IOException;
@@ -61,20 +59,21 @@ public class TemperatureConverter<W extends TemperatureWork<Integer>> implements
     }
 
     @Override
-    public Future<W> enqueueWork(W work) throws QueueOverflow {
+    public Future<W> enqueueWork(W work) throws UnqueuedWorkException {
         if (state != WorkerState.OPERATIONAL || pool.isShutdown())
-            return new FutureTask<>(() -> new RuntimeException("Worker not Operational"), work);
+            throw new UnqueuedWorkException("Worker is not operational. Work has been discarded.");
 
         if (pool.getQueue().size() >= maximumQueueSize)
-            throw new QueueOverflow("Maximum queue size reached. Work has been discarded.");
+            throw new UnqueuedWorkException("Maximum queue size reached. Work has been discarded.");
 
         Callable<W> callable = () -> {
-            String conversionType = getConversionType(work);
+            String conversionType = work.getConversionType();
 
             RequestTemplate template = getTemplate(conversionType);
             template.addRequestHeader("Content-Length", String.valueOf(work.toString().length() + 1));
             template.addRequestParam(conversionType, String.valueOf(work.getValue()));
 
+            log.info(String.format("Converting %d degrees %s", work.getValue(), conversionType));
             String response = template.performRequest();
             response = trimXMLResponse(response);
 
@@ -82,17 +81,6 @@ public class TemperatureConverter<W extends TemperatureWork<Integer>> implements
         };
 
         return pool.submit(callable);
-    }
-
-    private String getConversionType(W work) {
-        String conversionType;
-        if (work instanceof CelsiusToFahrenheit)
-            conversionType = "Celsius";
-        else if (work instanceof FahrenheitToCelsius)
-            conversionType = "Fahrenheit";
-        else
-            throw new RuntimeException("Worker does not know how to handle this type of TemperatureWork at this time.");
-        return conversionType;
     }
 
     private RequestTemplate getTemplate(String conversionType) {
@@ -119,4 +107,19 @@ public class TemperatureConverter<W extends TemperatureWork<Integer>> implements
         return response.substring(endOfOpeningXMLTag + 1, startOfEndingXMLTag);
     }
 
+    public WorkerState getState() {
+        return state;
+    }
+
+    public int getMaximumQueueSize() {
+        return maximumQueueSize;
+    }
+
+    public int getThreadPoolSize() {
+        return threadPoolSize;
+    }
+
+    public ThreadPoolExecutor getPool() {
+        return pool;
+    }
 }

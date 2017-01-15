@@ -1,11 +1,14 @@
 package work;
 
+import utils.Constants;
+
 /**
  * @author KPentaris - 13/1/2017.
  */
 public class CelsiusToFahrenheit implements TemperatureWork<Integer> {
 
     private int value;
+    private String conversionType = Constants.CELSIUS;
 
     @Override
     public TemperatureWork setValue(Integer value) {
@@ -18,4 +21,8 @@ public class CelsiusToFahrenheit implements TemperatureWork<Integer> {
         return value;
     }
 
+    @Override
+    public String getConversionType() {
+        return conversionType;
+    }
 }
