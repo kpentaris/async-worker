@@ -2,13 +2,13 @@ import exceptions.UnqueuedWorkException;
 import network.RequestTemplate;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.internal.runners.JUnit4ClassRunner;
 import org.junit.runner.RunWith;
+import org.junit.runners.BlockJUnit4ClassRunner;
 import work.CelsiusToFahrenheit;
 import work.FahrenheitToCelsius;
-import workers.implementations.TemperatureConverter;
 import workers.Worker;
 import workers.WorkerState;
+import workers.implementations.TemperatureConverter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.concurrent.Future;
 /**
  * @author KPentaris - 13/1/2017.
  */
-@RunWith(value = JUnit4ClassRunner.class)
+@RunWith(value = BlockJUnit4ClassRunner.class)
 public class IntegrationTests {
 
     @Test
