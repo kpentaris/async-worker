@@ -70,7 +70,7 @@ public class TemperatureConverter<W extends TemperatureWork<Integer>> implements
         Callable<W> callable = () -> {
             String conversionType = work.getConversionType();
 
-            RequestTemplate template = getTemplate(conversionType);
+            RequestTemplate template = getConfiguredTemplate(conversionType);
             template.addRequestHeader("Content-Length", String.valueOf(work.toString().length() + 1));
             template.addRequestParam(conversionType, String.valueOf(work.getValue()));
 
@@ -84,7 +84,7 @@ public class TemperatureConverter<W extends TemperatureWork<Integer>> implements
         return pool.submit(callable);
     }
 
-    private RequestTemplate getTemplate(String conversionType) {
+    private RequestTemplate getConfiguredTemplate(String conversionType) {
         RequestTemplate template;
         try {
             String url = BASE_URL;

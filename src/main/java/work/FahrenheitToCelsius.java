@@ -8,7 +8,7 @@ import utils.Constants;
 public class FahrenheitToCelsius implements TemperatureWork<Integer> {
 
     private int value;
-    private String conversionType = Constants.FAHRENHEIT;
+    private final String conversionType = Constants.FAHRENHEIT;
 
     @Override
     public TemperatureWork setValue(Integer value) {
